@@ -1,0 +1,275 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="data:,"></head><body>
+<title>Heads Up Classroom</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="tv/tv-app.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Chewy&family=Noto+Color+Emoji&display=swap">
+<style>
+/* World: Jelly Pals. A lilac toy box with ink-outlined jelly buttons. The teacher screen stays quiet and fast
+   (presses are instant, only a tiny press-down); the TV is where the pals play. */
+:root {
+  --bg: #EFE7FF; --panel: #FFFFFF; --panel-2: #F7F2FF; --ink: #2B2150; --ink-2: #625888; --line: #D8CCF4; --edge: #2B2150;
+  --accent: #6C4BF4; --on-accent: #FFFFFF; --lemon: #FFE45C; --good: #3DDC97; --bad: #FF7A70; --on-fill: #2B2150;
+  --fun: "Chewy", "Baloo 2", "Arial Rounded MT Bold", sans-serif;
+  --text: "Baloo 2", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --pic: "Noto Color Emoji", "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
+  --pop: cubic-bezier(.34, 1.56, .64, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1A1430; --panel: #261E45; --panel-2: #30285A; --ink: #F4EFFF; --ink-2: #B9AEDB; --line: #463B73; --edge: #5A4A9E;
+    --accent: #9C84FF; --on-accent: #120C26; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1A1430; --panel: #261E45; --panel-2: #30285A; --ink: #F4EFFF; --ink-2: #B9AEDB; --line: #463B73; --edge: #5A4A9E;
+  --accent: #9C84FF; --on-accent: #120C26; color-scheme: dark;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--text); font-size: 17px; line-height: 1.4; font-weight: 600; }
+[hidden] { display: none !important; }
+::selection { background: var(--accent); color: var(--on-accent); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+h1, h2 { text-wrap: balance; }
+
+.t { box-sizing: border-box; max-width: 1280px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column; gap: 18px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 16px 36px; }
+.t-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.brand { display: flex; align-items: center; gap: 14px; margin: 0 auto 0 0; font-weight: 400; }
+.brand-name { font-family: var(--fun); font-size: 44px; line-height: 1; color: #FF6FB1; -webkit-text-stroke: 3px var(--edge); paint-order: stroke fill;
+  text-shadow: 0 4px 0 var(--edge); transform: rotate(-3deg); display: inline-block; letter-spacing: .01em; }
+.level-badge { font: 700 15px/1 var(--text); background: var(--panel); color: var(--ink); padding: 8px 14px 6px; border-radius: 999px; border: 2.5px solid var(--edge); }
+.tv-status { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--ink-2); margin: 0; }
+.tv-status .dot { background: var(--line); width: 14px; height: 14px; border: 2px solid var(--edge); box-sizing: border-box; }
+.tv-status.on { color: var(--ink); }
+.tv-status.on .dot { background: var(--good); }
+.copied { font-size: 14px; color: var(--ink); margin: 0; }
+.tv-link-text { flex-basis: 100%; margin: 0; font-size: 14px; color: var(--ink-2); overflow-wrap: anywhere; user-select: all; }
+
+/* Jelly buttons: ink outline and a lip underneath; pressing squashes them down onto the lip. */
+.btn { font: 700 17px/1.1 var(--text); border: 3px solid var(--edge); border-radius: 18px; padding: 10px 18px 8px; min-height: 48px; box-sizing: border-box;
+  background: var(--panel); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  text-decoration: none; box-shadow: 0 5px 0 var(--edge); margin-bottom: 5px; transition: transform 90ms var(--pop), box-shadow 90ms, background-color 150ms ease-out; }
+.btn:hover { background: var(--panel-2); transform: translateY(-1px); box-shadow: 0 6px 0 var(--edge); }
+.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--edge); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: 0 5px 0 var(--edge); }
+.btn:focus-visible, .cat:focus-visible, .level:focus-visible, .chip:focus-visible, .swatch:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.btn-primary { background: var(--lemon); color: var(--on-fill); }
+.btn-primary:hover { background: #FFD92E; }
+.btn-good { background: var(--good); color: var(--on-fill); }
+.btn-good:hover { background: #2CCB86; }
+.btn-bad { background: var(--bad); color: var(--on-fill); }
+.btn-bad:hover { background: #FF6357; }
+.btn-xl { min-height: 80px; font-size: 23px; padding: 14px 24px 12px; border-radius: 22px; }
+.btn kbd { font: 700 13px var(--text); background: rgba(43, 33, 80, .12); color: inherit; border-radius: 8px; padding: 3px 8px 1px; }
+.btn-quiet { background: transparent; border-color: transparent; box-shadow: none; color: var(--ink-2); margin-bottom: 0; }
+.btn-quiet:hover { background: var(--panel-2); color: var(--ink); box-shadow: none; transform: none; }
+.btn-quiet:active { transform: none; box-shadow: none; }
+
+.setup { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.setup-side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.blk { background: var(--panel); border: 3px solid var(--edge); border-radius: 26px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0;
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--edge) 18%, transparent); }
+.blk h2, .board h2 { font: 400 30px/1.05 var(--fun); letter-spacing: .01em; margin: 0; }
+.hint { margin: 0; color: var(--ink-2); font-size: 15px; }
+.span2 { grid-column: 1 / -1; }
+.err { margin: 0; color: #D63B30; font-size: 15px; font-weight: 700; }
+.err:empty { display: none; }
+
+.levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.level { font: inherit; text-align: left; cursor: pointer; border: 3px solid var(--edge); border-radius: 22px; padding: 14px 18px 12px; background: var(--panel-2); color: var(--ink);
+  display: grid; gap: 4px; box-shadow: 0 5px 0 var(--edge); margin-bottom: 5px; transition: transform 90ms var(--pop), box-shadow 90ms, background-color 160ms; }
+.level:hover { transform: translateY(-1px); }
+.level:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--edge); }
+.level-name { font: 400 28px/1 var(--fun); }
+.level-note { font-size: 14px; color: var(--ink-2); }
+.level-count { font-size: 14px; font-weight: 700; color: var(--ink-2); }
+.level[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.level[aria-pressed="true"] .level-note, .level[aria-pressed="true"] .level-count { color: inherit; opacity: .9; }
+
+.teams { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.team-row { display: flex; align-items: center; gap: 10px; }
+.swatch { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--edge); flex: none; cursor: pointer; padding: 0; box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .15); }
+.field { font: 700 18px var(--text); padding: 10px 14px 8px; border-radius: 14px; border: 3px solid var(--line); background: var(--panel-2); color: var(--ink); min-width: 0; box-sizing: border-box; }
+.field:focus-visible { outline: none; border-color: var(--edge); }
+.team-row .field { flex: 1; }
+.x { width: 44px; min-height: 44px; padding: 0; font-size: 22px; }
+
+.seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 700 16px var(--text); border: 3px solid var(--edge); border-radius: 999px; padding: 7px 16px 5px; cursor: pointer; background: var(--panel); color: var(--ink);
+  transition: transform 90ms var(--pop), background-color 150ms; }
+.chip:active { transform: scale(.95); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.custom { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.custom .field { width: 120px; }
+.stepper { display: flex; align-items: center; gap: 14px; }
+.stepper output { font: 400 46px/1 var(--fun); min-width: 2ch; text-align: center; }
+.mini { width: 44px; height: 44px; min-height: 44px; padding: 0; font-size: 22px; border-radius: 14px; }
+.check { display: flex; align-items: center; gap: 10px; font-size: 17px; cursor: pointer; }
+.check input { width: 22px; height: 22px; accent-color: var(--accent); }
+
+.cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.cat { font: 700 16px var(--text); display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; border: 3px solid var(--edge);
+  border-radius: 18px; padding: 8px 12px; min-height: 62px; background: var(--panel-2); color: var(--ink-2); transition: transform 90ms var(--pop), background-color 160ms; }
+.cat:active { transform: scale(.97); }
+.cat .sw { width: 42px; height: 42px; border-radius: 12px; flex: none; display: grid; place-items: center; font-family: var(--pic); font-size: 24px;
+  background: var(--panel); filter: grayscale(1); opacity: .6; }
+.cat-name { min-width: 0; }
+.cat .n { margin-left: auto; font-weight: 600; font-size: 14px; }
+.cat[aria-pressed="true"] { background: color-mix(in srgb, var(--cat) 80%, #000); color: #fff; text-shadow: 0 1px 0 rgba(0, 0, 0, .25); }
+.cat[aria-pressed="true"] .sw { background: rgba(255, 255, 255, .92); filter: none; opacity: 1; }
+.cats-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.count { margin: 0 auto 0 0; font-weight: 700; }
+.go { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+
+.game { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(270px, 1fr); gap: 18px; align-items: start; }
+.stage { background: var(--panel); border: 3px solid var(--edge); border-radius: 28px; padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; min-width: 0;
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--edge) 18%, transparent); }
+.stage-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.turn-team { margin: 0; font: 400 34px/1.05 var(--fun); letter-spacing: .01em; display: flex; align-items: center; gap: 12px; min-width: 0; overflow-wrap: anywhere; }
+.dot { width: 18px; height: 18px; border-radius: 50%; flex: none; display: inline-block; }
+.turn-team .dot { border: 3px solid var(--edge); box-sizing: border-box; width: 24px; height: 24px; }
+.t-timer { margin: 0; font: 400 62px/1 var(--fun); font-variant-numeric: tabular-nums; padding: 10px 22px 4px; border-radius: 22px; background: var(--lemon); color: var(--on-fill);
+  border: 3px solid var(--edge); min-width: 3.4ch; text-align: center; }
+.t-timer.urgent { background: var(--bad); }
+.preview { display: flex; align-items: center; gap: 22px; min-height: 150px; padding: 18px 22px; border-radius: 24px; background: var(--panel-2); border: 3px dashed var(--line); }
+.pv-pic { font-family: var(--pic); font-size: 96px; line-height: 1; width: 120px; text-align: center; flex: none; }
+.preview.wordonly .pv-pic { font: 400 58px/1 var(--fun); color: var(--accent); }
+.pv-body { min-width: 0; }
+.pv-cat { margin: 0; font-weight: 700; font-size: 16px; color: var(--ink-2); }
+.pv-word { margin: 0; font-weight: 800; font-size: 50px; line-height: 1.04; overflow-wrap: anywhere; }
+.pv-meaning { margin: 6px 0 0; font-size: 16px; color: var(--ink-2); }
+.pv-meaning:empty { display: none; }
+.preview.empty .pv-pic { display: none; }
+.preview.empty .pv-word { font-size: 20px; font-weight: 600; color: var(--ink-2); line-height: 1.4; }
+.stage-msg { margin: 0; font-size: 18px; }
+.actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.pick { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.pick select { font-size: 16px; padding: 8px 12px; }
+.keys { margin: 0; font-size: 14px; color: var(--ink-2); }
+.board { background: var(--panel); border: 3px solid var(--edge); border-radius: 28px; padding: 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0;
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--edge) 18%, transparent); }
+.scores { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.score-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px 8px 14px; border-radius: 18px; background: var(--panel-2); border: 3px solid transparent; }
+.score-row.now { background: color-mix(in srgb, var(--team) 18%, var(--panel)); border-color: var(--team); }
+.score-name { font-weight: 700; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.score-num { font: 400 38px/1 var(--fun); min-width: 2ch; text-align: right; font-variant-numeric: tabular-nums; }
+.board-foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.turns { margin: 0 auto 0 0; color: var(--ink-2); font-size: 15px; }
+.credit { margin: 0; font-size: 13px; color: var(--ink-2); }
+
+@media (max-width: 860px) { .game, .setup { grid-template-columns: minmax(0, 1fr); } .t-timer { font-size: 48px; } .pv-word { font-size: 40px; } .levels { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 480px) { .preview { flex-direction: column; align-items: flex-start; } .btn-xl { font-size: 20px; } .brand-name { font-size: 36px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn, .cat, .level, .chip { transition: none; }
+}
+</style>
+
+<div id="teacher" class="t" hidden>
+  <header class="t-bar">
+    <h1 class="brand"><span class="brand-name">Heads Up!</span><span class="level-badge" id="levelBadge">Elementary</span></h1>
+    <p class="tv-status" id="tvStatus"><span class="dot"></span><span id="tvStatusText">TV screen not open</span></p>
+    <a id="tvLink" class="btn" target="_blank" rel="noopener">Open TV screen</a>
+    <button id="copyTv" class="btn btn-quiet" type="button">Copy TV link</button>
+    <p class="copied" id="copied" aria-live="polite"></p>
+    <p class="tv-link-text" id="tvLinkText" hidden></p>
+  </header>
+
+  <main id="setup" class="setup">
+    <section class="blk span2" aria-labelledby="levelH">
+      <h2 id="levelH">Which class is playing?</h2>
+      <div class="levels" id="levelList"></div>
+    </section>
+
+    <section class="blk" aria-labelledby="teamsH">
+      <h2 id="teamsH">Teams</h2>
+      <p class="hint">Add as many teams as you need. Type to rename one, or tap its colour to change it.</p>
+      <ul class="teams" id="teamList"></ul>
+      <div class="go"><button class="btn" id="addTeam" type="button">Add team</button></div>
+      <p class="err" id="teamErr"></p>
+    </section>
+
+    <div class="setup-side">
+      <section class="blk" aria-labelledby="timeH">
+        <h2 id="timeH">Time for each turn</h2>
+        <div class="seg" id="timePresets"></div>
+        <label class="custom" for="customSecs">Or type your own:
+          <input class="field" id="customSecs" type="number" inputmode="numeric" min="5" max="600" step="1" placeholder="75"> seconds
+        </label>
+        <p class="err" id="timeErr"></p>
+      </section>
+      <section class="blk" aria-labelledby="ptsH">
+        <h2 id="ptsH">Points for a correct card</h2>
+        <div class="stepper">
+          <button class="btn mini" id="ptsDown" type="button" aria-label="One point less">−</button>
+          <output id="ptsOut" aria-live="polite">1</output>
+          <button class="btn mini" id="ptsUp" type="button" aria-label="One point more">+</button>
+        </div>
+      </section>
+      <section class="blk" aria-labelledby="soundH">
+        <h2 id="soundH">Sound</h2>
+        <label class="check" for="soundOn"><input type="checkbox" id="soundOn" checked> Play the countdown, buzzer and cheers on the TV</label>
+      </section>
+    </div>
+
+    <section class="blk span2" aria-labelledby="catsH">
+      <h2 id="catsH">Card categories</h2>
+      <div class="cats" id="catList"></div>
+      <div class="cats-tools">
+        <p class="count" id="cardCount"></p>
+        <button class="btn btn-quiet" id="allCats" type="button">Use all</button>
+      </div>
+      <label class="check" for="lessonsOnly"><input type="checkbox" id="lessonsOnly"> Only words from their lessons</label>
+      <p class="hint" id="lessonsHint"></p>
+      <p class="err" id="catErr"></p>
+    </section>
+
+    <div class="go span2">
+      <button class="btn btn-primary btn-xl" id="startGame" type="button">Start game</button>
+      <button class="btn btn-quiet" id="newGame" type="button" hidden>New game, scores back to zero</button>
+    </div>
+  </main>
+
+  <main id="game" class="game" hidden>
+    <section class="stage" aria-labelledby="turnTeam">
+      <div class="stage-top">
+        <h2 class="turn-team" id="turnTeam"></h2>
+        <p class="t-timer" id="tTimer" aria-label="Time left">1:00</p>
+      </div>
+      <div class="preview" id="preview">
+        <div class="pv-pic" id="pvPic" aria-hidden="true"></div>
+        <div class="pv-body"><p class="pv-cat" id="pvCat"></p><p class="pv-word" id="pvWord"></p><p class="pv-meaning" id="pvMeaning"></p></div>
+      </div>
+      <p class="stage-msg" id="stageMsg"></p>
+      <div class="actions" id="actions"></div>
+      <div class="pick" id="pick"></div>
+      <p class="keys" id="keys"></p>
+    </section>
+    <aside class="board" aria-labelledby="scoresH">
+      <h2 id="scoresH">Scores</h2>
+      <ul class="scores" id="scoreList"></ul>
+      <div class="board-foot">
+        <p class="turns" id="turnsPlayed"></p>
+        <button class="btn btn-quiet" id="toSettings" type="button">Settings</button>
+        <button class="btn" id="endGame" type="button">End game</button>
+      </div>
+    </aside>
+  </main>
+  <p class="sr-only" id="live" aria-live="polite"></p>
+  <p class="credit">Animated pictures: Noto Emoji Animation by Google. Still pictures: Noto Color Emoji.</p>
+</div>
+
+<div id="tvRoot" hidden></div>
+
+<script src="cards.js"></script>
+<script src="cards-beginner.js"></script>
+<script src="cards-advanced.js"></script>
+<script src="animated.js"></script>
+<script src="core.js"></script>
+<script src="teacher.js"></script>
+<!-- If the TV script fails to arrive (a busy local server can drop a request), try again up to three times. -->
+<script src="tv/tv-app.js" onerror="(function(s){var n=(+s.dataset.tries||0)+1;if(n>3)return;var r=document.createElement('script');r.src='tv/tv-app.js?retry='+n;r.dataset.tries=n;r.onerror=s.onerror;setTimeout(function(){document.body.appendChild(r);},400*n);})(this)"></script>
+
+</body></html>

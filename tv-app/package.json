@@ -1,0 +1,27 @@
+{
+  "name": "heads-up-tv",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "The Heads Up TV screen: Jelly Pals, built with React and Remotion. Builds into ../heads-up/tv/.",
+  "scripts": {
+    "build": "vite build",
+    "build:site": "vite build --outDir ../tv --emptyOutDir",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/lottie": "4.0.543",
+    "@remotion/player": "4.0.543",
+    "lottie-web": "5.12.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.543"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "typescript": "5.6.3",
+    "vite": "5.4.11"
+  }
+}
